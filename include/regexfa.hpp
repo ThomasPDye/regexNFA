@@ -23,11 +23,7 @@ namespace regexfa
 
         inline charset(const char min, const char max)
         {
-<<<<<<< HEAD
-            for (char c = min; c <= max; c++)
-=======
             for (char c = min; c < max; c++)
->>>>>>> 54b58f8 (updated to remove infinite loop)
                 insert(c);
         }
     };
@@ -66,11 +62,7 @@ namespace regexfa
         using match_function = std::function<bool(char)>;
 
     public:
-<<<<<<< HEAD
-        inline named_matcher(match_function func, std::string name, const charset domain, bool epsilon = false) : _func(func), _name(name), is_epsilon(epsilon), _domain(domain) {}
-=======
         inline named_matcher(match_function func, std::string name, const charset domain, bool epsilon = false) : is_epsilon(epsilon), _func(func), _name(name), _domain(domain) {}
->>>>>>> 54b58f8 (updated to remove infinite loop)
 
         inline bool operator()(char c)
         {
@@ -92,11 +84,7 @@ namespace regexfa
         }
 
     private:
-<<<<<<< HEAD
-        inline void find_domain(charset super = charset(std::numeric_limits<char>::min(), std::numeric_limits<char>::max()))
-=======
         inline void find_domain(charset super = charset(1, std::numeric_limits<char>::max()))
->>>>>>> 54b58f8 (updated to remove infinite loop)
         {
             if (!is_epsilon)
                 for (auto c : super)
@@ -125,11 +113,7 @@ namespace regexfa
 
         inline const named_matcher ANY(
             [](char) -> bool
-<<<<<<< HEAD
-            { return true; }, "ANY", charset(std::numeric_limits<char>::min(), std::numeric_limits<char>::max()));
-=======
             { return true; }, "ANY", charset());
->>>>>>> 54b58f8 (updated to remove infinite loop)
 
     }
 
