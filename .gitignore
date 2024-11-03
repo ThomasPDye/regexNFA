@@ -1,2 +1,6 @@
 .vscode/*
+<<<<<<< HEAD
 build/*
+=======
+build/*
+>>>>>>> 54b58f8 (updated to remove infinite loop)
