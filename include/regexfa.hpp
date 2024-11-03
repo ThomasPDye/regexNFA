@@ -181,7 +181,7 @@ namespace regexfa
                 result += "  " + (std::string)r.start + " -> " + (std::string)r.end + " [label=\"" + (std::string)r.matcher + "\"];\n";
             result += (std::string)start + " [shape=square];\n";
             result += (std::string)end + " [shape=doublecircle];\n";
-            result += "}";
+            result += "}\n";
             return result;
         }
 
@@ -344,9 +344,26 @@ namespace regexfa
             if (c.second == machine.match(c.first))
                 log += "PASS: " + c.first + " -> " + (c.second ? "true" : "false") + "\n";
             else
-            {
                 log += "FAIL: " + c.first + " -> " + (c.second ? "false (expected true)" : "true (expected false)") + "\n";
-            }
+        }
+        return log;
+    }
+
+    inline std::string check_language(graph machine, size_t max_length, std::set<std::string> expected)
+    {
+        std::string log;
+        std::set<std::string> lang = machine.language(max_length);
+        for (auto e : expected)
+        {
+            if (lang.count(e))
+                log += "PASS: language contains \"" + e + "\"\n";
+            else
+                log += "FAIL: language does not contain \"" + e + "\"\n";
+        }
+        for (auto l : lang)
+        {
+            if (expected.count(l) == 0)
+                log += "FAIL: language contains \"" + l + "\"\n";
         }
         return log;
     }

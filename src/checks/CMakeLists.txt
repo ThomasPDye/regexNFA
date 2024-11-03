@@ -26,3 +26,24 @@ set_property(TEST test_match_check4a PROPERTY FAIL_REGULAR_EXPRESSION "FAIL:")
 
 add_test(NAME test_match_check4b COMMAND match_check4b)
 set_property(TEST test_match_check4b PROPERTY FAIL_REGULAR_EXPRESSION "FAIL:")
+
+add_executable(lang_check1 lang_check1.cpp)
+
+add_test(NAME test_lang_check1 COMMAND lang_check1)
+set_property(TEST test_lang_check1 PROPERTY FAIL_REGULAR_EXPRESSION "FAIL:")
+
+add_executable(lang_check2 lang_check2.cpp)
+
+add_test(NAME test_lang_check2 COMMAND lang_check2)
+set_property(TEST test_lang_check2 PROPERTY FAIL_REGULAR_EXPRESSION "FAIL:")
+
+
+add_executable(lang_test1 lang_test1.cpp)
+add_test(NAME test_lang_test1 COMMAND lang_test1)
+
+add_executable(lang_test2 lang_test2.cpp)
+add_test(NAME test_lang_test2 COMMAND lang_test2)
+
+
+add_executable(lang_test3 lang_test3.cpp)
+add_test(NAME test_lang_test3 COMMAND lang_test3)
