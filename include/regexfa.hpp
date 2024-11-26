@@ -76,10 +76,12 @@ namespace regexfa
 
         const bool is_epsilon;
 
-        inline charset domain()
+        inline charset domain(charset super = charset(1, std::numeric_limits<char>::max()))
         {
-            if (_domain.size() == 0)
-                find_domain();
+            if (is_epsilon)
+                _domain = {};
+            else if (_domain.size() == 0)
+                find_domain(super);
             return _domain;
         }
 
@@ -227,8 +229,9 @@ namespace regexfa
         {
             if (_domain.size() == 0)
                 for (auto r : rules)
-                    for (auto c : r.domain())
-                        _domain.insert(c);
+                    if (!r.is_epsilon())
+                        for (auto c : r.domain())
+                            _domain.insert(c);
         }
 
         inline std::set<std::string> language(const size_t max_length, const std::string pre = "")
@@ -241,8 +244,7 @@ namespace regexfa
                 find_domain();
                 for (auto c : _domain)
                 {
-                    std::string candidate = pre + c;
-                    for (auto sublang_str : language(max_length, candidate))
+                    for (auto sublang_str : language(max_length, pre + c))
                         result.insert(sublang_str);
                 }
             }
