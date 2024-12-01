@@ -5,7 +5,7 @@
 using namespace regex;
 using namespace regex::constructors;
 
-graph regex = concat(
+graph target = concat(
     zero_or_more(
         concat(
             single_char('l'),
@@ -25,7 +25,7 @@ const std::map<std::string, bool> cases = {
 
 int main()
 {
-    std::cout << regex.to_graph() << std::endl;
-    std::cerr << check(regex, cases) << std::endl;
+    std::cout << target.to_graph() << std::endl;
+    std::cerr << check(target, cases) << std::endl;
     return 0;
 }

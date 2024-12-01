@@ -5,7 +5,7 @@
 using namespace regex;
 using namespace regex::constructors;
 
-graph regex = concat(
+graph target = concat(
     single_char('a'),
     concat(
         optional(union_of(single_char('b'), single_char('c'))),
@@ -22,7 +22,7 @@ const std::set<std::string> expected = {
 
 int main()
 {
-    std::cout << regex.to_graph() << std::endl;
-    std::cerr << check_language(regex, 3, expected) << std::endl;
+    std::cout << target.to_graph() << std::endl;
+    std::cerr << check_language(target, 3, expected) << std::endl;
     return 0;
 }

@@ -5,7 +5,7 @@
 using namespace regex;
 using namespace regex::constructors;
 
-graph regex = concat(
+graph target = concat(
     concat(
         concat(
             single_char('h'), single_char('a')),
@@ -14,7 +14,7 @@ graph regex = concat(
 
 int main()
 {
-    std::cout << regex.label << std::endl;
-    std::cerr << regex.language(272).size() << std::endl;
+    std::cout << target.label << std::endl;
+    std::cerr << target.language(272).size() << std::endl;
     return 0;
 }

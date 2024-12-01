@@ -5,7 +5,7 @@
 using namespace regex;
 using namespace regex::constructors;
 
-graph regex = one_or_more(
+graph target = one_or_more(
     union_of(
         one_or_more(
             union_of(
@@ -17,7 +17,7 @@ graph regex = one_or_more(
 
 int main()
 {
-    std::cout << regex.label << std::endl;
-    std::cerr << regex.language(6).size() << std::endl;
+    std::cout << target.label << std::endl;
+    std::cerr << target.language(6).size() << std::endl;
     return 0;
 }
