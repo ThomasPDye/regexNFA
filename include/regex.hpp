@@ -7,7 +7,7 @@
 #include <functional>
 #include <limits>
 
-namespace regexfa
+namespace regex
 {
     typedef unsigned long index_t;
 

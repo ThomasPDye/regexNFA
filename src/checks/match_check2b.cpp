@@ -1,9 +1,9 @@
-#include "regexfa.hpp"
+#include "regex.hpp"
 
 #include <iostream>
 
-using namespace regexfa;
-using namespace regexfa::constructors;
+using namespace regex;
+using namespace regex::constructors;
 
 graph regex = one_or_more(concat(
     single_char('h'),

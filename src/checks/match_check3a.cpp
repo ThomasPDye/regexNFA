@@ -1,9 +1,9 @@
-#include "regexfa.hpp"
+#include "regex.hpp"
 
 #include <iostream>
 
-using namespace regexfa;
-using namespace regexfa::constructors;
+using namespace regex;
+using namespace regex::constructors;
 
 graph regex = union_of(concat(single_char('h'), single_char('i')),
                        concat(single_char('l'), single_char('o')));
