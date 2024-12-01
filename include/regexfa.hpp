@@ -23,10 +23,19 @@ namespace regexfa
 
         inline charset(const char min, const char max)
         {
-            for (char c = min; c < max; c++)
+            for (int c = min; c <= max; c++)
                 insert(c);
         }
+
+        inline charset operator+=(charset other)
+        {
+            for (auto c : other)
+                insert(c);
+            return *this;
+        }
     };
+
+    const charset non_null(1, 127);
 
     class state
     {
@@ -76,7 +85,7 @@ namespace regexfa
 
         const bool is_epsilon;
 
-        inline charset domain(charset super = charset(1, std::numeric_limits<char>::max()))
+        inline charset domain(const charset super = non_null)
         {
             if (is_epsilon)
                 _domain = {};
@@ -86,7 +95,7 @@ namespace regexfa
         }
 
     private:
-        inline void find_domain(charset super = charset(1, std::numeric_limits<char>::max()))
+        inline void find_domain(const charset super = non_null)
         {
             if (!is_epsilon)
                 for (auto c : super)
@@ -115,7 +124,7 @@ namespace regexfa
 
         inline const named_matcher ANY(
             [](char) -> bool
-            { return true; }, "ANY", charset());
+            { return true; }, "ANY", non_null);
 
     }
 
@@ -203,6 +212,42 @@ namespace regexfa
             return states.count(end) != 0;
         }
 
+        inline std::set<std::string> language(const size_t max_length)
+        {
+            std::set<std::string> result;
+            std::set<state> states = follow_epsilons(start);
+            std::map<state, std::set<std::string>> state_candidates;
+            for (auto s : states)
+                state_candidates[s].insert("");
+            for (size_t i = 0; i <= max_length; i++)
+            {
+                for (auto candidate : state_candidates[end])
+                    result.insert(candidate);
+                std::set<state> next_states;
+                std::map<state, std::set<std::string>> next_state_candidates;
+                // for each rule
+                for (auto r : rules)
+                {
+                    // if rule is not epsilon and follows an active state
+                    if (!r.is_epsilon() && states.count(r.start) != 0)
+                    {
+                        for (auto s : follow_epsilons(r.end))
+                        {
+                            for (auto c : r.domain())
+                            {
+                                for(auto candidate : state_candidates[r.start])
+                                    next_state_candidates[s].insert(candidate + c);
+                            }
+                            next_states.insert(s);
+                        }
+                    }
+                }
+                states = next_states;
+                state_candidates = next_state_candidates;
+            }
+            return result;
+        }
+
         inline std::set<state> follow_epsilons(state initial)
         {
             std::set<state> result;
@@ -225,16 +270,41 @@ namespace regexfa
             return result;
         }
 
-        inline void find_domain()
+        inline std::map<state, charset> domains(std::set<state> states)
         {
-            if (_domain.size() == 0)
-                for (auto r : rules)
-                    if (!r.is_epsilon())
-                        for (auto c : r.domain())
-                            _domain.insert(c);
+            std::map<state, charset> result;
+            for (auto r : rules)
+            {
+                if (states.count(r.start) != 0)
+                {
+                    result[r.start] += r.domain();
+                }
+            }
+            return result;
         }
 
-        inline std::set<std::string> language(const size_t max_length, const std::string pre = "")
+        inline std::set<std::string> shortest_first_language(const size_t max_length)
+        {
+            std::set<std::string> result;
+            std::set<std::string> candidates = {""}, previous_candidates;
+            find_domain();
+            for (size_t length = 0; length <= max_length; length++)
+            {
+                // construct the next set of candidates
+                for (auto cs : previous_candidates)
+                    for (auto c : _domain)
+                        candidates.insert(cs + c);
+                // check the latest set of candidates and place matches in result
+                for (auto cs : candidates)
+                    if (match(cs))
+                        result.insert(cs);
+                previous_candidates = candidates;
+                candidates = {};
+            }
+            return result;
+        }
+
+        inline std::set<std::string> depth_first_language(const size_t max_length, const std::string pre = "")
         {
             std::set<std::string> result;
             if (match(pre))
@@ -244,11 +314,20 @@ namespace regexfa
                 find_domain();
                 for (auto c : _domain)
                 {
-                    for (auto sublang_str : language(max_length, pre + c))
+                    for (auto sublang_str : depth_first_language(max_length, pre + c))
                         result.insert(sublang_str);
                 }
             }
             return result;
+        }
+
+        inline void find_domain()
+        {
+            if (_domain.size() == 0)
+                for (auto r : rules)
+                    if (!r.is_epsilon())
+                        for (auto c : r.domain())
+                            _domain.insert(c);
         }
 
     private:
