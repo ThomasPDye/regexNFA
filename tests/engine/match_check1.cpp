@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-using namespace regex;
-using namespace regex::constructors;
+using namespace regex::engine;
+using namespace regex::engine::constructors;
 
 graph target = concat(
     zero_or_more(
