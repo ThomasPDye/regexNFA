@@ -394,7 +394,6 @@ namespace regex
             state start, end;
             std::vector<rule> rules;
             std::string label = "[";
-            label += "]";
             for (auto sub : subs)
             {
                 label += "(" + sub.label + ")";
@@ -403,6 +402,7 @@ namespace regex
                 rules.emplace_back(start, matchers::EPSILON, sub.start);
                 rules.emplace_back(sub.end, matchers::EPSILON, end);
             }
+            label += "]";
             return graph(label, start, end, rules);
         }
 
